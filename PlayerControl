@@ -1,0 +1,52 @@
+using UnityEngine;
+using System.Collections;
+
+public class PlayerAnimations : MonoBehaviour
+{
+    
+    public float maxSpeed = 10f;
+    private bool isFacingRight = true;
+    private Animator anim;
+    private Rigidbody2D rb;
+
+	private void Start()
+    {
+        // тут я говорю какой переменной от чего брать данные, как я понял типо API 
+        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+   
+    private void FixedUpdate()
+    {
+        // в настройках движка есть значение что ad и <- -> движение по горизонтали
+        float move = Input.GetAxis("Horizontal");
+
+      
+        anim.SetFloat("Speed", Mathf.Abs(move));
+
+       // это мы говорим что он будет двигаться с такой-то скоростью
+        rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
+
+       // условия переворота персонажа, типо что если он смотрит вправо, а мы нажимаем влево, то он должен Flip
+        if (move > 0 && !isFacingRight)
+          
+            Flip();
+        
+        else if (move < 0 && isFacingRight)
+            Flip();
+    }
+
+   
+    private void Flip()
+    {
+        // тут условие Flip (т.е. разворот)
+        isFacingRight = !isFacingRight;
+       
+        Vector3 theScale = transform.localScale;
+      
+        theScale.x *= -1;
+       
+        transform.localScale = theScale;
+    }
+}
